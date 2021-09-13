@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo&display=swap" rel="stylesheet">
+    <link
+        href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAwsDAALi2tgDjQKQA////ADMzMgDb2NcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVVVVVVVSIABURERERFYgAAVDM0MzViAABURDQ0NWIAAAVENDQ0UgAABTM0NDRVAAAFRDQ0NFUAAABTNDM0RQAAAFRERERFAAAAVEREREUAAABRQUFBRQAAAFFRUVFRAAAAAQEBAQEAD//wAA//8AAP//AAAABwAAAAcAAIAHAACABwAAwAcAAMAHAADABwAA4AcAAOAHAADgBwAA4AcAAOAHAAD1VwAA"
+        rel="icon" type="image/x-icon" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Calender</title>
+</head>
+
+<body>
+    <button type="button" class="viewbtn" id="bbtn" onclick="getminus()"><img
+            src="https://img.icons8.com/material-rounded/24/000000/circled-left--v2.png" /></button>
+    <button type="button" class="chckbtn" id="fbtn" onclick="getplus()"><img
+            src="https://img.icons8.com/material-rounded/24/000000/circled-right-2.png" /></button>
+
+    <div class="calender">
+
+    </div>
+    <div id="myModal" class="modal">
+
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="frm-id" style="float:left">
+                Title:<input type="text" name="title" id="title" value="">
+                <br>
+                Date:<input type="text" name="date" id="date" value="">
+                <br>
+                From:<input type="time" name="from" id="from" value="">
+                TO:<input type="time" name="to" id="to" value="">
+                <br>
+                <label>Description</label>
+                <textarea style="resize:none" name="description" cols="num" rows="num"></textarea>
+                <br>
+                <button class="btn" type="submit" onclick="submitform(this.form,event)">Submit</button>
+
+                <button type="reset" class="clear1"></button>
+            </form>
+            <form id="newattendee" style="float:right">
+                Name:<input type="text" name="name" id="name" placeholder="" value="">
+                <br>
+                Email:<input type="text" name="newattendee" id="newattendee" value="">
+                <br>
+
+                <button class="btn" onclick="addnew(this.form,event)">Add new </button>
+                <button type="reset" class="clear2"></button>
+
+            </form>
+            <div class="btnview">
+                <button class="viewbtn" onclick="viewmembers(event)"><img
+                        src="https://img.icons8.com/material-rounded/24/000000/connection-status-off.png" /></button>
+            </div>
+        </div>
+
+    </div>
+    <div id="member">
+        <div id="member-content">
+
+        </div>
+
+    </div>
+    <div id="view-data">
+        <div id="view-data-content">
+
+        </div>
+
+    </div>
+
+    <div id="update-data">
+        <div id="update-data-content">
+            <form id="update-frm">
+                Title:<input type="text" name="title" id="title" value="">
+                <br>
+                Date:<input type="text" name="date" id="date" value="">
+                <br>
+                From:<input type="time" name="from" id="from" value="">
+                TO:<input type="time" name="to" id="to" value="">
+                <br>
+                <label>Description</label>
+                <textarea style="resize:none" name="description" cols="num" rows="num"></textarea>
+                <br>
+            </form>
+            <button class="btn" type="button" onclick="upbtn()">Edit</button>
+            <button class="btn" type="button" onclick="dlbtn()">Remove</button>
+        </div>
+
+    </div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1_PFx8TTNdPGxy2ja3FaDpORai2QBH5k",
+            authDomain: "calender-22103.firebaseapp.com",
+            databaseURL: "https://calender-22103-default-rtdb.firebaseio.com",
+            projectId: "calender-22103",
+            storageBucket: "calender-22103.appspot.com",
+            messagingSenderId: "534371997108",
+            appId: "1:534371997108:web:6c576cdec3c04a0a6a8ee1"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+    </script>
+    <script src="./calender.js"></script>
+</body>
+
+</html>
