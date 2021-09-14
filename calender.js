@@ -113,8 +113,7 @@ function getminus() {
 
 
 var viewdatacontent = $("#view-data-content");
-var membercontent=document.querySelector("#member-content");
-var updatefrm = document.querySelector("#update-frm");
+var membercontent=$("#member-content");
 
 
 // create node and add to the update content to the table 
@@ -150,7 +149,7 @@ function show3(fuly2) {
 //update and attach the node to the page for show name and email
 function show4(dAte){
     firebase.database().ref('Email/' +dAte).on('value',function(snapshot){
-        membercontent.innerHTML=" ";
+        membercontent.html(" ");
         if(snapshot.exists()) {
             
             var div = document.createElement('div');
@@ -183,19 +182,12 @@ function show4(dAte){
 
 // add the title description and from to to the firebase
 function submitform(data, e) {
-
     e.preventDefault();
-
     var formdata = {};
     for (var i = 0; i < data.length - 1; i++) {
 
         formdata[data[i].name] = data[i].value;
     }
-
-    // console.log(formdata);
-    var Array = formdata.date.split('-');
-    var fireYear = Array[0];//2021
-    var fireMonth = Array[1];//07
     var formdata2={};
     var flag=false;
     if(formdata.title.length==0)
@@ -236,9 +228,7 @@ function submitform(data, e) {
     else{
         flag=true;
         formdata2.description=formdata.description;
-
     }
-    console.log(formdata2);
     if(flag){
     firebase.database().ref('Year/' + formdata.date).push({
         Title: formdata2.Title,
@@ -247,11 +237,10 @@ function submitform(data, e) {
         Description: formdata2.description
     });
     }
-    e.submitform;
-    var clear1 = document.querySelector(".clear1");
+    var clear1 = document.$(".clear1");
     setTimeout(function () {
         clear1.click();
-        modal.style.display = "none";
+        modal.hide();
     }, 1000);
 
 }
@@ -265,8 +254,7 @@ function addnew(data2, e) {
     }
     let email = addnew.newattendee;
     if (validateEmail(email)) {
-        var frm = document.querySelector("#frm-id");
-        firebase.database().ref('Email/' + frm['date'].value).push({
+        firebase.database().ref('Email/' + $('#frm-id input[name="date"]').val()).push({
             Email: addnew.newattendee,
             Name:addnew.name
         });
@@ -274,11 +262,10 @@ function addnew(data2, e) {
     else {
         alert("please select corrct mail");
     }
-    e.submitform;
-    var clear2 = document.querySelector(".clear2");
+    var clear2 = $(".clear2");
     setTimeout(function () {
         clear2.click();
-        modal.style.display = "none";
+        modal.hide();
     }, 1000);
 
 
@@ -304,47 +291,45 @@ function capitalize(input) {
     }
     return CapitalizeWords;
 }
-
 //for refresh the view before the update and delete 
 function fillup(updateid) {
-    updatefrm.elements['date'].value = updateid.path[1].className;
-    firebase.database().ref('Year/' + `${updateid.path[1].className}/` + updateid.target.id).on('value', function (snapshot) {
-        updatefrm.elements['title'].value = snapshot.val().Title;
-        updatefrm.elements['from'].value = snapshot.val().From;
-        updatefrm.elements['to'].value = snapshot.val().To;
-        updatefrm.elements['description'].value = snapshot.val().Description;
+    $("#update-frm input[name=date]").val(updateid.target.parentElement.className);
+    firebase.database().ref('Year/' + `${updateid.target.parentElement.className}/` + updateid.target.id).on('value', function (snapshot) {
+        $("#update-frm input[name=title]").val(snapshot.val().Title);
+        $("#update-frm input[name=from]").val(snapshot.val().From);
+        $("#update-frm input[name=to]").val(snapshot.val().To);
+        $("#update-frm textarea[name=description]").val(snapshot.val().Description);
     });
-    show3(updateid.path[1].className);
+    show3(updateid.target.parentElement.className);
 }
 //for delete the existing data title description from and to using button on click
 function dlbtn(){
-       alert("Are you Sure");
-        show3(cheating.path[1].className);
-        firebase.database().ref('Year/' + `${cheating.path[1].className}/` + cheating.target.id).remove();
-        updatedata.style.display = "none";
+        alert("Are you Sure");
+        show3(cheating.target.parentElement.className);
+        firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + cheating.target.id).remove();
+        updatedata.hide();
 
-    show3(cheating.path[1].className);
+    show3(cheating.target.parentElement.className);
 }
 //for update the existing data title description from and to using button on click
 function upbtn(){
-        show3(cheating.path[1].className);
+        show3(cheating.target.parentElement.className);
             // document.getElementById(`${updateid.path[1].className}`).lastChild.innerHTML = " ";
-            firebase.database().ref('Year/' + `${cheating.path[1].className}/` + `${cheating.target.id}`).update({
-                Title: updatefrm.elements['title'].value,
-                From: updatefrm.elements['from'].value,
-                To: updatefrm.elements['to'].value,
-                Description: updatefrm.elements['description'].value
+            firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + `${cheating.target.id}`).update({
+                Title: $("#update-frm input[name=title]").val(),
+                From: $("#update-frm input[name=from]").val(),
+                To: $("#update-frm input[name=to]").val(),
+                Description: $("#update-frm textarea[name=description]").val()
             });
-            updatedata.style.display = "none";
-            show3(cheating.path[1].className);
+            updatedata.hide();
+            show3(cheating.target.parentElement.className);
         
 }
 //delete for the name and emails
-membercontent.addEventListener("click", function(e) {
-             console.log(e);
-             firebase.database().ref('Email/'+`${e.path[1].className}/`+e.path[0].id).remove();
-             show4(e.path[1].className);
-             member.style.display="none";
+membercontent.on("click", function(e) {
+             firebase.database().ref('Email/'+`${e.target.parentElement.className}/`+e.target.id).remove();
+             show4(e.target.parentElement.className);
+             member.hide();
 });
 
 
@@ -379,8 +364,8 @@ htmlCalender.on("click", function (e) {
     }
     else {
         modal.show();
-        var frmid = document.querySelector('input[name="date"]');
-        frmid.value = e.target.id;
+        var frmid = $('#frm-id input[name="date"]');
+        frmid.val(e.target.id);
         $('span').click(function () {
             modal.hide();
         });
