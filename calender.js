@@ -13,7 +13,7 @@ function createcalender(year, month) {
     var componentmonth = document.createTextNode(months[month]);
     var componentyear = document.createTextNode(year);
     monthYear.append(componentmonth);
-    monthYear.append(document.createTextNode (" "));
+    monthYear.append(document.createTextNode(" "));
     monthYear.append(componentyear);
     forfunyear = year + "-" + month;
     htmlCalender.append(monthYear);
@@ -57,12 +57,11 @@ function createcalender(year, month) {
     table.append(tablebody);
     htmlCalender.append(table);
 
-    function show(fuly2) {
+    function show1(fuly2) {
         firebase.database().ref('Year/' + fuly2).on('value', function (snapshot) {
             if (snapshot.exists()) {
                 var t = fuly2.split("-")[2];
-                var tb = document.getElementById(fuly2);
-                tb.lastChild.innerHTML =" ";
+                $(`#${fuly2}`).last().html("");
                 var div = document.createElement('div');
                 div.id = 'container';
                 snapshot.forEach(function (ChildSnapshot) {
@@ -73,12 +72,12 @@ function createcalender(year, month) {
                     div1.id = "childdiv"
                     div1.append(d);
                     div.append(div1);
-                    tb.append(div);
+                    $(`#${fuly2}`).append(div);
                 });
             }
         });
     }
-    diss(show);
+    diss(show1);
     function diss(callback) {
         for (var k = 0; k <= 31; k++) {
             var fuly2 = forfunyear + "-" + k;
@@ -86,6 +85,10 @@ function createcalender(year, month) {
         }
 
     }
+    //viewing current Date with color
+    var nowdate = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+    $(`#${nowdate}`).css("background-color", "#FFEDDA");
+
 }
 
 createcalender(year, month);
@@ -97,7 +100,7 @@ function getplus() {
         year++;
         month = 0;
     }
-    htmlCalender.innerHTML = "";
+    htmlCalender.html("");
     createcalender(year, month);
 }
 function getminus() {
@@ -106,14 +109,14 @@ function getminus() {
         year--;
         month = 11;
     }
-    htmlCalender.innerHTML = "";
+    htmlCalender.html("");
     createcalender(year, month);
 }
 
 
 
 var viewdatacontent = $("#view-data-content");
-var membercontent=$("#member-content");
+var membercontent = $("#member-content");
 
 
 // create node and add to the update content to the table 
@@ -124,7 +127,7 @@ function show3(fuly2) {
     firebase.database().ref('Year/' + fuly2).on('value', function (snapshot) {
         viewdatacontent.html(" ");
         if (snapshot.exists()) {
-            
+
             var t = fuly2.split("-")[2];
             var div = document.createElement('div');
             div.id = 'container3';
@@ -147,11 +150,11 @@ function show3(fuly2) {
     });
 }
 //update and attach the node to the page for show name and email
-function show4(dAte){
-    firebase.database().ref('Email/' +dAte).on('value',function(snapshot){
+function show4(dAte) {
+    firebase.database().ref('Email/' + dAte).on('value', function (snapshot) {
         membercontent.html(" ");
-        if(snapshot.exists()) {
-            
+        if (snapshot.exists()) {
+
             var div = document.createElement('div');
             div.id = 'container6';
             div.className = dAte;
@@ -188,54 +191,50 @@ function submitform(data, e) {
 
         formdata[data[i].name] = data[i].value;
     }
-    var formdata2={};
-    var flag=false;
-    if(formdata.title.length==0)
-    {
-        alert(`Please fill up Title`);
-        flag=false;
+    var formdata2 = {};
+    var flag = false;
+    if (formdata.title.length == 0) {
+        showerror($("#frm-id input[name=title]", "Title shold be fillup"));
+        flag = false;
         return false;
     }
-    else{
-        var str=capitalize(formdata.title);
-        formdata2.Title=str;
-        var frm = document.querySelector("#frm-id");
-        frm.elements["title"].value=str;
-        flag=true;
+    else {
+        var str = capitalize(formdata.title);
+        formdata2.Title = str;
+        $("frm-id input[name=title]").val(str);
+        flag = true;
     }
-    if(formdata.from =="" || formdata.to=="")
-    {
-        alert('Please fillup the form');
-        flag=false;
+    if (formdata.from == "" || formdata.to == "") {
+        showerror($("#frm-id input[name=from]", "please fillup the form"));
+        flag = false;
         return false;
     }
     else if (formdata.from <= formdata.to) {
-        formdata2.From=formdata.from;
-        formdata2.To=formdata.to;
-        flag=true;
+        formdata2.From = formdata.from;
+        formdata2.To = formdata.to;
+        flag = true;
     }
     else {
-        alert("Check the time properly");
-        flag=false;
+        showerror($("#frm-id input[name=from]", "Check time properly"));
+        flag = false;
         return false;
     }
-    if(formdata.description.length==0)
-    {
-        alert("please write something in description");
-        flag=true;
+    if (formdata.description.length == 0) {
+        showerror($("#frm-id input[name=description]", "fillup something in description"));
+        flag = true;
         return false;
     }
-    else{
-        flag=true;
-        formdata2.description=formdata.description;
+    else {
+        flag = true;
+        formdata2.description = formdata.description;
     }
-    if(flag){
-    firebase.database().ref('Year/' + formdata.date).push({
-        Title: formdata2.Title,
-        From: formdata2.From,
-        To: formdata2.To,
-        Description: formdata2.description
-    });
+    if (flag) {
+        firebase.database().ref('Year/' + formdata.date).push({
+            Title: formdata2.Title,
+            From: formdata2.From,
+            To: formdata2.To,
+            Description: formdata2.description
+        });
     }
     var clear1 = document.$(".clear1");
     setTimeout(function () {
@@ -256,11 +255,11 @@ function addnew(data2, e) {
     if (validateEmail(email)) {
         firebase.database().ref('Email/' + $('#frm-id input[name="date"]').val()).push({
             Email: addnew.newattendee,
-            Name:addnew.name
+            Name: addnew.name
         });
     }
     else {
-        alert("please select corrct mail");
+        showerror($("#newattendee input[name=newattendee]", "Enter Correct Mail"));
     }
     var clear2 = $(".clear2");
     setTimeout(function () {
@@ -291,6 +290,12 @@ function capitalize(input) {
     }
     return CapitalizeWords;
 }
+
+
+
+
+
+
 //for refresh the view before the update and delete 
 function fillup(updateid) {
     $("#update-frm input[name=date]").val(updateid.target.parentElement.className);
@@ -302,41 +307,82 @@ function fillup(updateid) {
     });
     show3(updateid.target.parentElement.className);
 }
-//for delete the existing data title description from and to using button on click
-function dlbtn(){
-        alert("Are you Sure");
-        show3(cheating.target.parentElement.className);
-        firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + cheating.target.id).remove();
-        updatedata.hide();
 
+
+
+
+//for delete the existing data title description from and to using button on click
+function dlbtn() {
+    content.show();
+    suretab.show();
+    var y = $(".Yes");
+    y.on("click", function () {
+        salertc.html(" ");
+        suretab.hide();
+        var h1 = document.createElement('h1');
+        h1.append(document.createTextNode("Deleted successfully !"));
+        salertc.append(h1);
+        salert.hide();
+        salertc.setAttribute("style", "background-color:green");
+        setTimeout(function () {
+            salertc.hide();
+            salert.hide();
+            h1.html("");
+        }, 1000);
+    show3(cheating.target.parentElement.className);
+    firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + cheating.target.id).remove();
+    updatedata.hide();
+    content.hide();
+    });
     show3(cheating.target.parentElement.className);
 }
+
+
 //for update the existing data title description from and to using button on click
-function upbtn(){
-        show3(cheating.target.parentElement.className);
-            // document.getElementById(`${updateid.path[1].className}`).lastChild.innerHTML = " ";
-            firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + `${cheating.target.id}`).update({
-                Title: $("#update-frm input[name=title]").val(),
-                From: $("#update-frm input[name=from]").val(),
-                To: $("#update-frm input[name=to]").val(),
-                Description: $("#update-frm textarea[name=description]").val()
-            });
-            updatedata.hide();
-            show3(cheating.target.parentElement.className);
-        
-}
-//delete for the name and emails
-membercontent.on("click", function(e) {
-             firebase.database().ref('Email/'+`${e.target.parentElement.className}/`+e.target.id).remove();
-             show4(e.target.parentElement.className);
-             member.hide();
+function upbtn() {
+    show3(cheating.target.parentElement.className);
+    // document.getElementById(`${updateid.path[1].className}`).lastChild.innerHTML = " ";
+   
+    content.show();
+    suretab.show();
+    var y = $(".Yes"); 
+    y.on("click", function () {
+        salertc.html(" ");
+        suretab.hide();
+        let h1 = document.createElement('h1');
+        h1.append(document.createTextNode("Successfully !"));
+        salertc.append(h1);
+        salert.show();
+        salertc.attr("style", "background-color:green");
+        setTimeout(function () {
+            salertc.hide();
+            salert.hide();
+            
+        }, 1000);
+    firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + `${cheating.target.id}`).update({
+        Title: $("#update-frm input[name=title]").val(),
+        From: $("#update-frm input[name=from]").val(),
+        To: $("#update-frm input[name=to]").val(),
+        Description: $("#update-frm textarea[name=description]").val()
+    });
+    updatedata.hide();
+    show3(cheating.target.parentElement.className);
+    content.hide();
+    
 });
+}
 
-
-
-
-
-
+var N = $(".No");
+N.on ("click", function () {
+    suretab.hide();
+    content.hide();
+});
+//delete for the name and emails
+membercontent.on("click", function (e) {
+    firebase.database().ref('Email/' + `${e.target.parentElement.className}/` + e.target.id).remove();
+    show4(e.target.parentElement.className);
+    member.hide();
+});
 
 // popup showing  and display section 
 var modal = $("#myModal");
@@ -344,7 +390,7 @@ var span = $(".close").first();
 var viewdata = $("#view-data");
 var updatedata = $("#update-data");
 var cheating;
-var member=$("#member");
+var member = $("#member");
 var forfunctiondate;
 // display the form
 htmlCalender.on("click", function (e) {
@@ -392,30 +438,36 @@ viewdatacontent.on("click", function (e) {
         }
     });
     fillup(e);
-    cheating=e;  
+    cheating = e;
 });
 
 //for display the name and email
-function viewmembers(e)
-{
+function viewmembers(e) {
     e.preventDefault;
     member.show();
     $('span').click(function () {
         member.hide();
     });
     $(window).click(function (event) {
-         
+
         if (event.target.id == "member") {
             member.hide();
         }
-        if(event.target.className=="modal") {
+        if (event.target.className == "modal") {
             modal.hide();
         }
     });
-    var frm=$("#frm-id input[name=date]").val();
+    var frm = $("#frm-id input[name=date]").val();
     show4(frm);
 }
+var suretab = $(".sure-tab");
+var content = $(".sure-tab-content");
+var salert =$(".showalert");
+var salertc = $(".showalert-content");
 
-//viewing current Date with color
-var nowdate=date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate();
-$(`#${nowdate}`).css("background-color","#FFEDDA");
+function showerror(parent, error) {
+    parent.attr("placeholder", error);
+        setTimeout(function () {
+        parent.attr("placeholder", " ");
+    }, 2000);
+}
