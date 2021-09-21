@@ -8,7 +8,7 @@ var month = date.getMonth();
 var htmlCalender = $(".calender");
 // var monthYear = document.querySelector(".update");
 var forfunyear;
-function createcalender(year, month) {
+async function createcalender(year, month) {
     var monthYear = $('<h1>');
     var componentmonth = document.createTextNode(months[month]);
     var componentyear = document.createTextNode(year);
@@ -43,8 +43,14 @@ function createcalender(year, month) {
 
             }
             else {
+                var h3=document.createElement("h5");
+                var divholi=document.createElement("p");
+                divholi.className=forfunyear + "-" + currentdate+"-h";
                 var contentbody = document.createTextNode(currentdate);
-                body.append(contentbody);
+                h3.append(contentbody);
+
+                body.append(h3);
+                body.append(divholi);
 
                 body.setAttribute("id", forfunyear + "-" + currentdate);
                 currentdate++;
@@ -61,7 +67,7 @@ function createcalender(year, month) {
         firebase.database().ref('Year/' + fuly2).on('value', function (snapshot) {
             if (snapshot.exists()) {
                 var t = fuly2.split("-")[2];
-                $(`#${fuly2}`).last().html("");
+                $(`#${fuly2} div:last-child`).html("");
                 var div = document.createElement('div');
                 div.id = 'container';
                 snapshot.forEach(function (ChildSnapshot) {
@@ -76,6 +82,9 @@ function createcalender(year, month) {
                 });
             }
         });
+
+
+        
     }
     diss(show1);
     function diss(callback) {
@@ -88,6 +97,41 @@ function createcalender(year, month) {
     //viewing current Date with color
     var nowdate = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
     $(`#${nowdate}`).css("background-color", "#FFEDDA");
+
+
+
+
+     await fetch(`https://calendarific.com/api/v2/holidays?&api_key=4b7a01f42d03492a4e612ab338b54ba2e16be086&country=in&year=${year}`)
+        .then(res => res.json())
+        .then(data => {
+            var holiday = data.response.holidays;
+
+            var thismonth = (holiday.filter(h => { return h.date.iso.split("-")[1] == month+1 }));
+            thismonth.map(h => {
+                var string=h.date.iso;
+                var middle=h.date.iso.split("-")[1];
+                var laststring=string.split("-")[2];
+                if(laststring.charAt(0)=='0')
+                {
+                    
+                    string=string.split("-")[0]+"-"+string.split("-")[1]+"-"+laststring.charAt(1);
+                }
+                else if(middle.charAt(0)=='0')
+                    {
+                        string=string.split("-")[0]+"-"+middle.charAt(1)+"-"+laststring.substring(0,2);
+                    }
+
+                var inte=parseInt(string.split("-")[1]);
+                inte=inte-1;
+                var mide=inte.toString();
+                string=string.split("-")[0]+"-"+mide+"-"+string.split("-")[2];
+                console.log(h.name+" "+ string);
+
+                var holiname=document.createTextNode(h.name);
+                
+                $(`.${string}-h`).append(h.name);
+            });
+        });
 
 }
 
@@ -137,7 +181,7 @@ function show3(fuly2) {
                 var tit = ChildSnapshot.val().Title;
                 var fro = ChildSnapshot.val().From;
                 var to = ChildSnapshot.val().To;
-                var d = `Title:${tit}, Description:${data}, From:${fro}, To:${to}`;
+                var d = `Title:${tit}\n Description:${data}\n From:${fro}\n To:${to}`;
 
                 var div1 = document.createElement("div");
                 div1.className = "childdiv3";
@@ -194,18 +238,18 @@ function submitform(data, e) {
     var formdata2 = {};
     var flag = false;
     if (formdata.title.length == 0) {
-        showerror($("#frm-id input[name=title]", "Title shold be fillup"));
+        showerror("#frm-id input[name=title]", "Title shold be fillup");
         flag = false;
         return false;
     }
     else {
         var str = capitalize(formdata.title);
         formdata2.Title = str;
-        $("frm-id input[name=title]").val(str);
+        $("#frm-id input[name=title]").val(str);
         flag = true;
     }
     if (formdata.from == "" || formdata.to == "") {
-        showerror($("#frm-id input[name=from]", "please fillup the form"));
+        showerror("#frm-id input[name=to]", "please fillup the form");
         flag = false;
         return false;
     }
@@ -215,12 +259,12 @@ function submitform(data, e) {
         flag = true;
     }
     else {
-        showerror($("#frm-id input[name=from]", "Check time properly"));
+        showerror("#frm-id input[name=to]", "Check time properly");
         flag = false;
         return false;
     }
     if (formdata.description.length == 0) {
-        showerror($("#frm-id input[name=description]", "fillup something in description"));
+        showerror("#frm-id textarea[name=description]", "fillup something");
         flag = true;
         return false;
     }
@@ -236,7 +280,7 @@ function submitform(data, e) {
             Description: formdata2.description
         });
     }
-    var clear1 = document.$(".clear1");
+    var clear1 = $(".clear1");
     setTimeout(function () {
         clear1.click();
         modal.hide();
@@ -259,7 +303,8 @@ function addnew(data2, e) {
         });
     }
     else {
-        showerror($("#newattendee input[name=newattendee]", "Enter Correct Mail"));
+        showerror("#newattendee input[name=newattendee]", "check Mail");
+        return false;
     }
     var clear2 = $(".clear2");
     setTimeout(function () {
@@ -319,20 +364,20 @@ function dlbtn() {
     y.on("click", function () {
         salertc.html(" ");
         suretab.hide();
-        var h1 = document.createElement('h1');
+        let h1 = document.createElement('h1');
         h1.append(document.createTextNode("Deleted successfully !"));
         salertc.append(h1);
-        salert.hide();
-        salertc.setAttribute("style", "background-color:green");
+        salert.show();
+        salertc.attr("style", "background-color:green");
         setTimeout(function () {
             salertc.hide();
             salert.hide();
-            h1.html("");
         }, 1000);
-    show3(cheating.target.parentElement.className);
-    firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + cheating.target.id).remove();
-    updatedata.hide();
-    content.hide();
+        show3(cheating.target.parentElement.className);
+        firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + cheating.target.id).remove();
+        updatedata.hide();
+        show3(cheating.target.parentElement.className);
+        content.hide();
     });
     show3(cheating.target.parentElement.className);
 }
@@ -342,10 +387,10 @@ function dlbtn() {
 function upbtn() {
     show3(cheating.target.parentElement.className);
     // document.getElementById(`${updateid.path[1].className}`).lastChild.innerHTML = " ";
-   
+
     content.show();
     suretab.show();
-    var y = $(".Yes"); 
+    var y = $(".Yes");
     y.on("click", function () {
         salertc.html(" ");
         suretab.hide();
@@ -357,23 +402,23 @@ function upbtn() {
         setTimeout(function () {
             salertc.hide();
             salert.hide();
-            
+
         }, 1000);
-    firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + `${cheating.target.id}`).update({
-        Title: $("#update-frm input[name=title]").val(),
-        From: $("#update-frm input[name=from]").val(),
-        To: $("#update-frm input[name=to]").val(),
-        Description: $("#update-frm textarea[name=description]").val()
+        firebase.database().ref('Year/' + `${cheating.target.parentElement.className}/` + `${cheating.target.id}`).update({
+            Title: $("#update-frm input[name=title]").val(),
+            From: $("#update-frm input[name=from]").val(),
+            To: $("#update-frm input[name=to]").val(),
+            Description: $("#update-frm textarea[name=description]").val()
+        });
+        updatedata.hide();
+        show3(cheating.target.parentElement.className);
+        content.hide();
+
     });
-    updatedata.hide();
-    show3(cheating.target.parentElement.className);
-    content.hide();
-    
-});
 }
 
 var N = $(".No");
-N.on ("click", function () {
+N.on("click", function () {
     suretab.hide();
     content.hide();
 });
@@ -462,12 +507,27 @@ function viewmembers(e) {
 }
 var suretab = $(".sure-tab");
 var content = $(".sure-tab-content");
-var salert =$(".showalert");
+var salert = $(".showalert");
 var salertc = $(".showalert-content");
 
 function showerror(parent, error) {
-    parent.attr("placeholder", error);
-        setTimeout(function () {
-        parent.attr("placeholder", " ");
-    }, 2000);
+    $(`${parent}`).next().html(error);
+    setTimeout(function () {
+        $(parent).next().html("");
+    }, 5000);
 }
+
+
+
+
+
+// fetch('https://calendarific.com/api/v2/holidays?&api_key=4b7a01f42d03492a4e612ab338b54ba2e16be086&country=in&year=2021')
+// .then(res=>res.json())
+// .then(data=>{
+//     var holiday=data.response.holidays;
+
+//     var thismonth=(holiday.filter(h=>{return h.date.iso.split("-")[1]==4}));
+//     thismonth.map(h=>{
+//         console.log(h.date.iso+ " "+ h.name);
+//     });
+// });
