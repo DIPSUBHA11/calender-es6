@@ -31,32 +31,40 @@
             <span class="close">&times;</span>
             <form id="frm-id" style="float:left">
                 Title:<input type="text" name="title" id="title" value="">
+                <code></code>
                 <br>
                 Date:<input type="text" name="date" id="date" value="">
                 <br>
                 From:<input type="time" name="from" id="from" value="">
                 TO:<input type="time" name="to" id="to" value="">
+                <code></code>
                 <br>
                 <label>Description</label>
                 <textarea style="resize:none" name="description" cols="num" rows="num"></textarea>
+                <code></code>
                 <br>
-                <button class="btn" type="submit" onclick="submitform(this.form,event)">Submit</button>
-
+                <div class="center">
+                    <button class="btn" type="submit" onclick="submitform(this.form,event)">Submit</button>
+                </div>
                 <button type="reset" class="clear1"></button>
             </form>
-            <form id="newattendee" style="float:right">
-                Name:<input type="text" name="name" id="name" placeholder="" value="">
-                <br>
-                Email:<input type="text" name="newattendee" id="newattendee" value="">
-                <br>
+            <div class="nameandemail" style="float: right">
+                <form id="newattendee">
+                    Name:<input type="text" name="name" id="name" placeholder="" value="">
+                    <br>
+                    Email:<input type="text" name="newattendee" id="newattendee" value="">
+                    <code></code>
+                    <br>
+                    <div class="center">
+                        <button class="btn" onclick="addnew(this.form,event)">Add new </button>
+                    </div>
+                    <button type="reset" class="clear2"></button>
 
-                <button class="btn" onclick="addnew(this.form,event)">Add new </button>
-                <button type="reset" class="clear2"></button>
-
-            </form>
-            <div class="btnview">
-                <button class="viewbtn" onclick="viewmembers(event)"><img
-                        src="https://img.icons8.com/material-rounded/24/000000/connection-status-off.png" /></button>
+                </form>
+                <div class="btnview">
+                    <button class="viewbtn" onclick="viewmembers(event)"><img
+                            src="https://img.icons8.com/material-rounded/24/000000/connection-status-off.png" /></button>
+                </div>
             </div>
         </div>
 
@@ -77,23 +85,40 @@
     <div id="update-data">
         <div id="update-data-content">
             <form id="update-frm">
-                Title:<input type="text" name="title" id="title" value="">
+                <label>Title:</label>
+                <input type="text" name="title" id="title" value="">
                 <br>
-                Date:<input type="text" name="date" id="date" value="">
+                <label>Date:</label>
+                <input type="text" name="date" id="date" value="">
                 <br>
-                From:<input type="time" name="from" id="from" value="">
-                TO:<input type="time" name="to" id="to" value="">
+                <label>From:</label>
+                <input type="time" name="from" id="from" value="">
+                <label>To:</label>
+                <input type="time" name="to" id="to" value="">
                 <br>
-                <label>Description</label>
+                <label>Description:</label>
                 <textarea style="resize:none" name="description" cols="num" rows="num"></textarea>
                 <br>
             </form>
-            <button class="btn" type="button" onclick="upbtn()">Edit</button>
-            <button class="btn" type="button" onclick="dlbtn()">Remove</button>
+            <div class="btn-style">
+                <button class="btn" id="updatebtn" type="button" onclick="upbtn()">Update</button>
+                <button class="btn" id="removebtn" type="button" onclick="dlbtn()">Remove</button>
+            </div>
         </div>
 
     </div>
+    <div class="showalert">
+        <div class="showalert-content">
 
+        </div>
+    </div>
+    <div class="sure-tab-content">
+        <div class="sure-tab">
+            <h1>Are You Sure ?</h1>
+            <button class="Yes btn">Yes</button>
+            <button class="No btn" >No</button>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
